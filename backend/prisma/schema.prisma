@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AuditAction {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users User[]
+  tasks Task[]
+  auditLogs AuditLog[]
+
+  @@map("organizations")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  passwordHash   String?  @map("password_hash")
+  name           String
+  role           Role     @default(MEMBER)
+  googleId       String?  @unique @map("google_id")
+  githubId       String?  @unique @map("github_id")
+  organizationId String   @map("organization_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdTasks  Task[]       @relation("TaskCreator")
+  assignedTasks Task[]       @relation("TaskAssignee")
+  auditLogs     AuditLog[]
+
+  @@index([organizationId])
+  @@map("users")
+}
+
+model Task {
+  id             String     @id @default(uuid())
+  title          String
+  description    String?
+  status         TaskStatus @default(TODO)
+  priority       Priority   @default(MEDIUM)
+  organizationId String     @map("organization_id")
+  createdBy      String     @map("created_by")
+  assignedTo     String?    @map("assigned_to")
+  dueDate        DateTime?  @map("due_date")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  creator      User         @relation("TaskCreator", fields: [createdBy], references: [id])
+  assignee     User?        @relation("TaskAssignee", fields: [assignedTo], references: [id])
+  auditLogs    AuditLog[]
+
+  @@index([organizationId])
+  @@index([createdBy])
+  @@index([assignedTo])
+  @@map("tasks")
+}
+
+model AuditLog {
+  id             String      @id @default(uuid())
+  action         AuditAction
+  taskId         String?     @map("task_id")
+  performedBy    String      @map("performed_by")
+  organizationId String      @map("organization_id")
+  changes        Json?
+  taskTitle      String?     @map("task_title")
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  task         Task?        @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  user         User         @relation(fields: [performedBy], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([taskId])
+  @@map("audit_logs")
+}
