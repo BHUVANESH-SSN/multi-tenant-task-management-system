@@ -23,7 +23,7 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system desig
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Runtime:** [Node.js](https://nodejs.org/)
