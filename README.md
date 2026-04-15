@@ -1,4 +1,4 @@
-# 🚀 TaskFlow: Enterprise Multi-Tenant Task Management
+#  TaskFlow: Enterprise Multi-Tenant Task Management
 
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
@@ -10,16 +10,16 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system desig
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- **🌐 Robust Multi-Tenancy:** Secure data isolation using an organization-based architecture. Users can only access data belonging to their specific organization.
-- **🛡️ Granular RBAC:** Distinct **Admin** and **Member** roles.
+- **Robust Multi-Tenancy:** Secure data isolation using an organization-based architecture. Users can only access data belonging to their specific organization.
+- **Granular RBAC:** Distinct **Admin** and **Member** roles.
   - *Admins:* Full control over tasks, users, and audit logs.
   - *Members:* Task creation and management with restricted permissions for cross-user data.
-- **📊 Advanced Task Management:** Comprehensive CRUD operations with support for status tracking (`TODO`, `IN_PROGRESS`, `DONE`), priority levels (`LOW`, `MEDIUM`, `HIGH`), and due dates.
-- **📝 Automated Audit Logging:** Every critical action (create, update, delete) is automatically logged with a JSON diff of changes, providing a clear history of "who did what and when."
-- **🔑 Secure Authentication:** Dual authentication strategy supporting traditional Email/Password (bcrypt) and modern OAuth (Google/GitHub) via Passport.js.
-- **🐳 DevOps Ready:** Fully containerized with Docker and Docker Compose for seamless deployment and environment consistency.
+- **Advanced Task Management:** Comprehensive CRUD operations with support for status tracking (`TODO`, `IN_PROGRESS`, `DONE`), priority levels (`LOW`, `MEDIUM`, `HIGH`), and due dates.
+- **Automated Audit Logging:** Every critical action (create, update, delete) is automatically logged with a JSON diff of changes, providing a clear history of "who did what and when."
+- **Secure Authentication:** Dual authentication strategy supporting traditional Email/Password (bcrypt) and modern OAuth (Google/GitHub) via Passport.js.
+- **DevOps Ready:** Fully containerized with Docker and Docker Compose for seamless deployment and environment consistency.
 
 ---
 
@@ -40,7 +40,7 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system desig
 
 ---
 
-## 🏗️ Project Architecture
+##  Project Architecture
 
 ```text
 ├── docker-compose.yaml      # Orchestrates Backend, Frontend, and PostgreSQL
@@ -64,7 +64,7 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system desig
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - [Docker](https://www.docker.com/get-started) & [Docker Compose](https://docs.docker.com/compose/install/)
@@ -78,7 +78,7 @@ docker compose up --build
 
 ---
 
-## 🔧 Local Development Setup
+##  Local Development Setup
 
 ### 1. Database & Environment
 1. Create a `.env` file in the `backend/` directory (see `backend/.env.example`).
@@ -102,7 +102,7 @@ npm run dev
 
 ---
 
-## 🛡️ Security & RBAC Implementation
+##  Security & RBAC Implementation
 
 Data security is baked into the core of TaskFlow:
 - **Tenant Isolation:** Every database query is scoped to the `organization_id` of the authenticated user.
@@ -115,4 +115,4 @@ Data security is baked into the core of TaskFlow:
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-*Created with ❤️ by [Your Name/Github](https://github.com/YourUsername)*
+*Created with ❤️ by [BHUVANESH S](https://github.com/BHUVANESH-SSN)*
