@@ -1,148 +1,100 @@
 import { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
-import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
-    const { user } = useAuth();
-    const [stats, setStats] = useState({ total: 0, todo: 0, inProgress: 0, done: 0 });
-    const [recentTasks, setRecentTasks] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    totalTasks: 0,
+    completedTasks: 0,
+    pendingTasks: 0,
+  });
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchDashboardData();
-    }, []);
-
-    const fetchDashboardData = async () => {
-        try {
-            const { data } = await api.get('/tasks?limit=5');
-            const tasks = data.tasks || [];
-
-            setStats({
-                total: data.pagination?.total || tasks.length,
-                todo: tasks.filter(t => t.status === 'TODO').length,
-                inProgress: tasks.filter(t => t.status === 'IN_PROGRESS').length,
-                done: tasks.filter(t => t.status === 'DONE').length,
-            });
-
-            // For more accurate counts, fetch all with each status
-            const [todoRes, ipRes, doneRes] = await Promise.all([
-                api.get('/tasks?status=TODO&limit=1'),
-                api.get('/tasks?status=IN_PROGRESS&limit=1'),
-                api.get('/tasks?status=DONE&limit=1'),
-            ]);
-
-            setStats({
-                total: data.pagination?.total || 0,
-                todo: todoRes.data.pagination?.total || 0,
-                inProgress: ipRes.data.pagination?.total || 0,
-                done: doneRes.data.pagination?.total || 0,
-            });
-
-            setRecentTasks(tasks);
-        } catch (err) {
-            console.error('Failed to fetch dashboard data:', err);
-        } finally {
-            setLoading(false);
-        }
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await api.get('/tasks');
+        const tasks = response.data.tasks || [];
+        setStats({
+          totalTasks: tasks.length,
+          completedTasks: tasks.filter(t => t.status === 'done').length,
+          pendingTasks: tasks.filter(t => t.status !== 'done').length,
+        });
+      } catch (error) {
+        console.error('Failed to load stats', error);
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchStats();
+  }, []);
 
-    const getStatusBadge = (status) => {
-        const map = {
-            TODO: { className: 'badge badge-todo', label: 'To Do' },
-            IN_PROGRESS: { className: 'badge badge-in-progress', label: 'In Progress' },
-            DONE: { className: 'badge badge-done', label: 'Done' },
-        };
-        const s = map[status] || map.TODO;
-        return <span className={s.className}>{s.label}</span>;
-    };
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          Welcome back, <span className="font-semibold text-gray-900 dark:text-white">{user?.name}</span>
+        </div>
+      </div>
 
-    const getPriorityBadge = (priority) => {
-        const map = {
-            LOW: { className: 'badge badge-low', label: 'Low' },
-            MEDIUM: { className: 'badge badge-medium', label: 'Medium' },
-            HIGH: { className: 'badge badge-high', label: 'High' },
-        };
-        const p = map[priority] || map.MEDIUM;
-        return <span className={p.className}>{p.label}</span>;
-    };
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Total Tasks Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-2 border-gray-300 dark:border-gray-600 p-6 flex items-center">
+          <div className="p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 mr-4">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Tasks</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{loading ? '...' : stats.totalTasks}</p>
+          </div>
+        </div>
 
-    if (loading) {
-        return (
-            <Layout>
-                <div className="spinner-overlay"><div className="spinner"></div></div>
-            </Layout>
-        );
-    }
+        {/* Pending Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-2 border-gray-300 dark:border-gray-600 p-6 flex items-center">
+          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-500 mr-4">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pending</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{loading ? '...' : stats.pendingTasks}</p>
+          </div>
+        </div>
 
-    return (
-        <Layout>
-            <div className="page-header">
-                <h1>Dashboard</h1>
-                <p className="page-description">
-                    Welcome back, {user?.name}! Here's an overview of your organization's tasks.
-                </p>
-            </div>
+        {/* Completed Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-2 border-gray-300 dark:border-gray-600 p-6 flex items-center">
+          <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 mr-4">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Completed</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{loading ? '...' : stats.completedTasks}</p>
+          </div>
+        </div>
+      </div>
 
-            <div className="page-body">
-                <div className="stats-grid">
-                    <div className="stat-card">
-                        <div className="stat-icon">📋</div>
-                        <div className="stat-value">{stats.total}</div>
-                        <div className="stat-label">Total Tasks</div>
-                    </div>
-                    <div className="stat-card">
-                        <div className="stat-icon">🔴</div>
-                        <div className="stat-value">{stats.todo}</div>
-                        <div className="stat-label">To Do</div>
-                    </div>
-                    <div className="stat-card">
-                        <div className="stat-icon">🟡</div>
-                        <div className="stat-value">{stats.inProgress}</div>
-                        <div className="stat-label">In Progress</div>
-                    </div>
-                    <div className="stat-card">
-                        <div className="stat-icon">🟢</div>
-                        <div className="stat-value">{stats.done}</div>
-                        <div className="stat-label">Completed</div>
-                    </div>
-                </div>
-
-                <h2 style={{ fontSize: 'var(--font-lg)', marginBottom: 'var(--space-lg)' }}>Recent Tasks</h2>
-
-                {recentTasks.length === 0 ? (
-                    <div className="empty-state">
-                        <div className="empty-icon">☐</div>
-                        <h3>No tasks yet</h3>
-                        <p>Create your first task to get started</p>
-                    </div>
-                ) : (
-                    <div className="tasks-grid">
-                        {recentTasks.map(task => (
-                            <div key={task.id} className="task-card">
-                                <div className="task-card-header">
-                                    <span className="task-card-title">{task.title}</span>
-                                    {getPriorityBadge(task.priority)}
-                                </div>
-                                {task.description && (
-                                    <p className="task-card-description">{task.description}</p>
-                                )}
-                                <div className="task-card-meta">
-                                    {getStatusBadge(task.status)}
-                                    {task.assignee && (
-                                        <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)' }}>
-                                            → {task.assignee.name}
-                                        </span>
-                                    )}
-                                    <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-                                        {new Date(task.createdAt).toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-        </Layout>
-    );
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-2 border-gray-300 dark:border-gray-600 overflow-hidden">
+        <div className="px-6 py-5 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Quick Actions</h3>
+        </div>
+        <div className="p-6">
+          <p className="text-gray-600 dark:text-gray-300 mb-4">You have {stats.pendingTasks} pending tasks that need your attention.</p>
+          <Link to="/tasks" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900 transition-colors">
+            View All Tasks
+            <svg className="ml-2 -mr-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }

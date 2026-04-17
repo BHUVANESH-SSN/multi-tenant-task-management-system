@@ -23,6 +23,18 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(passport.initialize());
 
+// --- Base Routes ---
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to Multi-Tenant Task API' });
+});
+
+app.get('/api', (req, res) => {
+    res.json({ 
+        message: 'Multi-Tenant Task API v1.0',
+        endpoints: ['/api/auth', '/api/tasks', '/api/audit-logs', '/api/users', '/api/organizations']
+    });
+});
+
 // --- Health check ---
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
