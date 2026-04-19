@@ -6,6 +6,7 @@ const { authorize } = require('../middleware/rbac');
 const { tenantIsolation } = require('../middleware/tenantIsolation');
 const authController = require('../controllers/auth.controller');
 const config = require('../config');
+const { BadRequestError } = require('../utils/errors');
 
 const router = express.Router();
 
@@ -80,13 +81,19 @@ if (config.google.clientId && config.google.clientSecret) {
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
+                    const email = profile.emails?.[0]?.value || profile._json?.email;
+                    if (!email) {
+                        return done(new BadRequestError('Google account did not provide an email address'));
+                    }
+
                     const result = await authService.googleAuth({
                         googleId: profile.id,
-                        email: profile.emails[0].value,
-                        name: profile.displayName,
+                        email,
+                        name: profile.displayName || profile.name?.givenName || email.split('@')[0],
                     });
                     done(null, result);
                 } catch (error) {
+                    console.error('Google OAuth error:', error);
                     done(error);
                 }
             }
@@ -135,6 +142,7 @@ if (config.github.clientId && config.github.clientSecret) {
                     });
                     done(null, result);
                 } catch (error) {
+                    console.error('GitHub OAuth error:', error);
                     done(error);
                 }
             }

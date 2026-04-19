@@ -1,4 +1,5 @@
 const taskService = require('../services/task.service');
+const normalizeEnum = (value) => (typeof value === 'string' ? value.trim().toUpperCase() : value);
 
 async function createTask(req, res, next) {
     try {
@@ -6,8 +7,8 @@ async function createTask(req, res, next) {
         const task = await taskService.createTask({
             title,
             description,
-            status,
-            priority,
+            status: normalizeEnum(status),
+            priority: normalizeEnum(priority),
             dueDate,
             assignedTo,
             organizationId: req.organizationId,
@@ -24,8 +25,8 @@ async function getTasks(req, res, next) {
         const { status, priority, assignedTo, createdBy, page, limit } = req.query;
         const result = await taskService.getTasks({
             organizationId: req.organizationId,
-            status,
-            priority,
+            status: normalizeEnum(status),
+            priority: normalizeEnum(priority),
             assignedTo,
             createdBy,
             page: parseInt(page) || 1,
@@ -56,7 +57,11 @@ async function updateTask(req, res, next) {
             organizationId: req.organizationId,
             userId: req.user.id,
             userRole: req.user.role,
-            data: req.body,
+            data: {
+                ...req.body,
+                status: normalizeEnum(req.body.status),
+                priority: normalizeEnum(req.body.priority),
+            },
         });
         res.json(task);
     } catch (error) {

@@ -5,10 +5,8 @@ const config = require('../config');
  * Global error handler middleware
  */
 function errorHandler(err, req, res, next) {
-    // Log error in development
-    if (config.nodeEnv === 'development') {
-        console.error('Error:', err);
-    }
+    // Always log errors to CloudWatch for debugging
+    console.error('Error:', err);
 
     // Handle known operational errors
     if (err instanceof AppError) {
@@ -33,7 +31,7 @@ function errorHandler(err, req, res, next) {
 
     // Handle unknown errors
     res.status(500).json({
-        error: config.nodeEnv === 'development' ? err.message : 'Internal server error',
+        error: err.message || 'Internal server error',
     });
 }
 

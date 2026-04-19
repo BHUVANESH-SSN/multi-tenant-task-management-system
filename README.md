@@ -141,9 +141,9 @@ docker compose up --build
 ## Local Development Setup
 
 ### 1. Environment Setup
-1. Create a `.env` file in the `backend/` directory using `backend/.env.example`.
-2. Set your `DATABASE_URL` for PostgreSQL.
-3. Add JWT and OAuth environment variables if you want to test authentication providers locally.
+1. Copy `.env.example` to `.env` in the project root for Docker Compose runs.
+2. If you run the backend directly without Docker Compose, you can also copy `backend/.env.example` to `backend/.env`.
+3. Set your `DATABASE_URL`, JWT secrets, and OAuth credentials as needed for your environment.
 
 ### 2. Backend
 

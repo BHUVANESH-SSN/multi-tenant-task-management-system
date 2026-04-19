@@ -19,8 +19,8 @@ export default function Dashboard() {
         const tasks = response.data.tasks || [];
         setStats({
           totalTasks: tasks.length,
-          completedTasks: tasks.filter(t => t.status === 'done').length,
-          pendingTasks: tasks.filter(t => t.status !== 'done').length,
+          completedTasks: tasks.filter(t => t.status === 'DONE').length,
+          pendingTasks: tasks.filter(t => t.status !== 'DONE').length,
         });
       } catch (error) {
         console.error('Failed to load stats', error);

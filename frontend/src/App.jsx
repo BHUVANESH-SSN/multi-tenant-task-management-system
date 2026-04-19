@@ -24,7 +24,7 @@ export default function App() {
                     <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/tasks" element={<Tasks />} />
-                        <Route path="/audit-logs" element={<ProtectedRoute requiredRole="ADMIN"><AuditLogs /></ProtectedRoute>} />
+                        <Route path="/audit-logs" element={<AuditLogs />} />
                         <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN"><AdminPanel /></ProtectedRoute>} />
                     </Route>
 

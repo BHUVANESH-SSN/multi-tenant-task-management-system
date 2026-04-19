@@ -1,0 +1,27 @@
+# The manifest for the "production-rds" environment.
+# Read the full specification for the "Environment" type at:
+#  https://aws.github.io/copilot-cli/docs/manifest/environment/
+
+# Your environment name will be used in naming your resources like VPC, cluster, etc.
+name: production-rds
+type: Environment
+
+# Import your own VPC and subnets or configure how they should be created.
+network:
+  vpc:
+    id: vpc-0d724da7f65a2164e
+    subnets:
+      public:
+        - id: subnet-0d97dfe7afb59b1b8
+        - id: subnet-05e1e8ad7e59a9390
+        - id: subnet-0f7db12b8c27b6ab1
+
+# Configure the load balancers in your environment, once created.
+http:
+  public:
+    certificates:
+      - arn:aws:acm:eu-north-1:604475637823:certificate/6feee72b-fce8-41fb-a646-11c8afb03cda
+
+# Configure observability for your environment resources.
+observability:
+  container_insights: false

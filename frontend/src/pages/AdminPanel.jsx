@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
+import Modal from '../components/Modal';
 
 export default function AdminPanel() {
     const { user: currentUser } = useAuth();
@@ -211,85 +211,62 @@ export default function AdminPanel() {
                 )}
             </div>
 
-            {/* Add Member Modal */}
-            {showAddModal && (
-                <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={() => setShowAddModal(false)}></div>
-                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-200 dark:border-gray-700">
-                            <form onSubmit={handleAddMember}>
-                                <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                    <div className="flex justify-between items-center mb-5">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">Add Member to Organization</h3>
-                                        <button type="button" onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-500 focus:outline-none">
-                                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                        </button>
-                                    </div>
-                                    
-                                    {error && (
-                                        <div className="mb-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-400 p-4">
-                                            <div className="flex">
-                                                <div className="flex-shrink-0">
-                                                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
-                                                </div>
-                                                <div className="ml-3">
-                                                    <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+            <Modal open={showAddModal} title="Add Member to Organization" onClose={() => setShowAddModal(false)}>
+                <form onSubmit={handleAddMember}>
+                    <div className="bg-white px-4 pt-5 pb-4 dark:bg-gray-800 sm:px-6">
+                        {error && (
+                            <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-300">
+                                {error}
+                            </div>
+                        )}
 
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
-                                            <input
-                                                type="text"
-                                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                                placeholder="Jane Smith"
-                                                value={addForm.name}
-                                                onChange={(e) => setAddForm(f => ({ ...f, name: e.target.value }))}
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                                            <input
-                                                type="email"
-                                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                                placeholder="jane@company.com"
-                                                value={addForm.email}
-                                                onChange={(e) => setAddForm(f => ({ ...f, email: e.target.value }))}
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                                            <input
-                                                type="password"
-                                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                                placeholder="Min. 6 characters"
-                                                value={addForm.password}
-                                                onChange={(e) => setAddForm(f => ({ ...f, password: e.target.value }))}
-                                                required
-                                                minLength={6}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-200 dark:border-gray-600">
-                                    <button type="submit" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                        Add Member
-                                    </button>
-                                    <button type="button" onClick={() => setShowAddModal(false)} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </form>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                                <input
+                                    type="text"
+                                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                    placeholder="Jane Smith"
+                                    value={addForm.name}
+                                    onChange={(e) => setAddForm((f) => ({ ...f, name: e.target.value }))}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                <input
+                                    type="email"
+                                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                    placeholder="jane@company.com"
+                                    value={addForm.email}
+                                    onChange={(e) => setAddForm((f) => ({ ...f, email: e.target.value }))}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                                <input
+                                    type="password"
+                                    className="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                    placeholder="Min. 6 characters"
+                                    value={addForm.password}
+                                    onChange={(e) => setAddForm((f) => ({ ...f, password: e.target.value }))}
+                                    required
+                                    minLength={6}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                    <div className="border-t-2 border-gray-300 bg-gray-50 px-4 py-3 dark:border-gray-600 dark:bg-gray-700 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="submit" className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 sm:ml-3 sm:w-auto sm:text-sm">
+                            Add Member
+                        </button>
+                        <button type="button" onClick={() => setShowAddModal(false)} className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800 sm:mt-0 sm:w-auto sm:text-sm">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </Modal>
 
             {toast && (
                 <div className="fixed bottom-4 right-4 z-50 animate-fade-in-up">

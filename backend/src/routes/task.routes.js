@@ -6,6 +6,7 @@ const { tenantIsolation } = require('../middleware/tenantIsolation');
 const taskController = require('../controllers/task.controller');
 
 const router = express.Router();
+const normalizeEnum = (value) => (typeof value === 'string' ? value.trim().toUpperCase() : value);
 
 // All task routes require authentication and tenant isolation
 router.use(authenticate, tenantIsolation);
@@ -16,8 +17,8 @@ router.post(
     [
         body('title').notEmpty().withMessage('Title is required').isLength({ max: 255 }),
         body('description').optional().isString(),
-        body('status').optional().isIn(['TODO', 'IN_PROGRESS', 'DONE']).withMessage('Invalid status'),
-        body('priority').optional().isIn(['LOW', 'MEDIUM', 'HIGH']).withMessage('Invalid priority'),
+        body('status').optional().customSanitizer(normalizeEnum).isIn(['TODO', 'IN_PROGRESS', 'DONE']).withMessage('Invalid status'),
+        body('priority').optional().customSanitizer(normalizeEnum).isIn(['LOW', 'MEDIUM', 'HIGH']).withMessage('Invalid priority'),
         body('dueDate').optional().isISO8601().withMessage('Invalid date format'),
         body('assignedTo').optional().isUUID().withMessage('Invalid user ID'),
     ],
@@ -37,8 +38,8 @@ router.put(
     [
         body('title').optional().notEmpty().isLength({ max: 255 }),
         body('description').optional().isString(),
-        body('status').optional().isIn(['TODO', 'IN_PROGRESS', 'DONE']),
-        body('priority').optional().isIn(['LOW', 'MEDIUM', 'HIGH']),
+        body('status').optional().customSanitizer(normalizeEnum).isIn(['TODO', 'IN_PROGRESS', 'DONE']),
+        body('priority').optional().customSanitizer(normalizeEnum).isIn(['LOW', 'MEDIUM', 'HIGH']),
         body('dueDate').optional({ nullable: true }).isISO8601(),
         body('assignedTo').optional({ nullable: true }).isUUID(),
     ],
