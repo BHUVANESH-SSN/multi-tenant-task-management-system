@@ -5,6 +5,8 @@
 [![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)](https://www.prisma.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
+[![Namecheap](https://img.shields.io/badge/Namecheap-DE3723?style=for-the-badge&logo=namecheap&logoColor=white)](https://www.namecheap.com/)
 
 TaskFlow is a robust, enterprise-ready multi-tenant task management system designed for organizational efficiency. It features strict data isolation, granular Role-Based Access Control (RBAC), and comprehensive audit trails, ensuring security and accountability across all workspaces.
 
@@ -23,6 +25,17 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system desig
 
 ---
 
+##  Deployment & Infrastructure
+
+TaskFlow is optimized for modern cloud-native deployment on AWS, utilizing managed services to ensure high availability, security, and scalability:
+
+- **Container Orchestration:** Deployed using **AWS Copilot** to manage the container lifecycle.
+- **Compute:** Running on **Amazon ECS (Elastic Container Service) with AWS Fargate** for serverless container execution (no EC2 instances to manage).
+- **SSL/HTTPS:** Secured using **AWS Certificate Manager (ACM)** to provision and auto-renew SSL certificates.
+- **Domain Management:** Custom domain registered and managed via **Namecheap**, integrated with AWS Route 53 / ALB for clean URL routing.
+
+---
+
 ##  Tech Stack
 
 ### Backend
@@ -37,6 +50,13 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system desig
 - **Build Tool:** [Vite](https://vitejs.dev/)
 - **Routing:** [React Router 6](https://reactrouter.com/)
 - **API Client:** [Axios](https://axios-http.com/)
+
+### Infrastructure & Cloud
+- **Cloud Provider:** [Amazon Web Services (AWS)](https://aws.amazon.com/)
+- **Container Orchestration:** [AWS Copilot CLI](https://aws.github.io/copilot-cli/)
+- **Serverless Compute:** [Amazon ECS with AWS Fargate](https://aws.amazon.com/ecs/)
+- **SSL Certificates:** [AWS Certificate Manager (ACM)](https://aws.amazon.com/certificate-manager/)
+- **Domain Registry:** [Namecheap](https://www.namecheap.com/)
 
 ---
 
