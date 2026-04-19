@@ -191,4 +191,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-Created with ❤️ by [BHUVANESH S](https://github.com/BHUVANESH-SSN)
+Created by [BHUVANESH S](https://github.com/BHUVANESH-SSN)
