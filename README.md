@@ -11,6 +11,9 @@
 TaskFlow is a robust, enterprise-ready multi-tenant task management system designed for organizational efficiency. It features strict data isolation, granular Role-Based Access Control (RBAC), and comprehensive audit trails, ensuring security and accountability across all workspaces.
 
 ---
+## Architecture Diagram
+<img width="1013" height="621" alt="image" src="https://github.com/user-attachments/assets/461b2f2d-4b39-495e-975f-a57800ddfd0c" />
+
 
 ## Key Features
 
