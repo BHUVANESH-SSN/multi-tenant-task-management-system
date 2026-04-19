@@ -13,9 +13,11 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system desig
 ---
 ## Architecture Diagram
 <img width="1013" height="621" alt="image" src="https://github.com/user-attachments/assets/461b2f2d-4b39-495e-975f-a57800ddfd0c" />
-## Database Scehma
+## Database Scehma (Core Attributes)
 <img width="995" height="410" alt="image" src="https://github.com/user-attachments/assets/24b98693-c383-4d06-8c2d-f47c8102f85f" />
 
+## Detailed Schema 
+<img width="595" height="625" alt="image" src="https://github.com/user-attachments/assets/d4a55bc4-55be-43aa-95d6-04faa07952e2" />
 
 ## Key Features
 
