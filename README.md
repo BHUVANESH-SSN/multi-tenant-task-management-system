@@ -22,6 +22,8 @@ TaskFlow is a robust, enterprise-ready multi-tenant task management system built
 <img width="596" height="722" alt="TaskFlow detailed schema" src="https://github.com/user-attachments/assets/0c6cf6cf-3cce-4152-b54f-6a586ee14d81" />
 
 ---
+## Demo Video
+[!Video Link](https://vimeo.com/1184510833?share=copy&fl=sv&fe=ci)
 
 ## Key Features
 
