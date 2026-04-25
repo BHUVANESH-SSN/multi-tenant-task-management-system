@@ -25,7 +25,7 @@ https://taskflowapp.me
 
 ---
 ## Demo Video
-![ Task Flow | Video Link](https://vimeo.com/1184510833?fl=ip&fe=ec)
+[▶️ Watch Task Flow Video](https://vimeo.com/1184510833)
 
 ## Key Features
 
