@@ -1,0 +1,30 @@
+{
+    "RoleName": "multi-tenant-system-production-backen-ExecutionRole-zOSUjYEsNyP6",
+    "PolicyName": "AllowSSMGetParametersForCopilot",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "AllowSSMGetParameters",
+                "Effect": "Allow",
+                "Action": [
+                    "ssm:GetParameter",
+                    "ssm:GetParameters",
+                    "ssm:GetParametersByPath"
+                ],
+                "Resource": [
+                    "arn:aws:ssm:eu-north-1:604475637823:parameter/DATABASE_URL",
+                    "arn:aws:ssm:eu-north-1:604475637823:parameter/copilot/*"
+                ]
+            },
+            {
+                "Sid": "AllowKmsDecryptIfNeeded",
+                "Effect": "Allow",
+                "Action": [
+                    "kms:Decrypt"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+}

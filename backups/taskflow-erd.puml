@@ -1,0 +1,93 @@
+@startuml
+!pragma layout smetana
+
+top to bottom direction
+hide empty members
+
+' Layout: clean orthogonal connectors with extra spacing
+skinparam linetype ortho
+skinparam nodesep 230
+skinparam ranksep 210
+skinparam roundCorner 10
+skinparam ArrowThickness 1.5
+skinparam ArrowFontSize 11
+
+' Entity style
+skinparam EntityBackgroundColor #f9f9f9
+skinparam EntityBorderColor #333333
+skinparam EntityAttributeFontName Arial
+
+entity "organizations" as org {
+  * id: UUID <<PK>>
+  --
+  * name: String
+  * slug: String <<UNIQUE>>
+  * created_at: DateTime
+}
+
+entity "users" as user {
+  * id: UUID <<PK>>
+  --
+  * email: String <<UNIQUE>>
+  password_hash?: String
+  * name: String
+  * role: Role
+  google_id?: String <<UNIQUE>>
+  github_id?: String <<UNIQUE>>
+  * organization_id: UUID <<FK>>
+  * created_at: DateTime
+}
+
+entity "tasks" as task {
+  * id: UUID <<PK>>
+  --
+  * title: String
+  description?: String
+  * status: TaskStatus
+  * priority: Priority
+  * organization_id: UUID <<FK>>
+  * created_by: UUID <<FK>>
+  assigned_to?: UUID <<FK>>
+  due_date?: DateTime
+  * created_at: DateTime
+  * updated_at: DateTime
+}
+
+entity "audit_logs" as audit {
+  * id: UUID <<PK>>
+  --
+  * action: AuditAction
+  task_id?: UUID <<FK>>
+  * performed_by: UUID <<FK>>
+  * organization_id: UUID <<FK>>
+  changes?: Json
+  task_title?: String
+  * created_at: DateTime
+}
+
+' Force this layout:
+'          users
+'            |
+' organizations - tasks
+'                \
+'               audit_logs
+
+user -[hidden]down-> task
+org  -[hidden]right-> task
+task -[hidden]right-> audit
+org  -[hidden]down-> audit
+
+' Ownership relations
+org  "1" -[#2E86C1]up->    "0..N" user  : has_users
+org  "1" -[#2E86C1]right-> "0..N" task  : has_tasks
+org  "1" -[#5DADE2]down->  "0..N" audit : has_logs
+
+' User-task relations
+user "1"    -[#28B463]down-> "0..N" task : creates
+task "0..1" -[#1ABC9C]up->   "1"    user : assigned_to
+
+' Audit relations
+user "1" -[#E67E22]right-> "0..N" audit : performs
+task "1" -[#E74C3C]right-> "0..N" audit : generates
+
+@enduml
