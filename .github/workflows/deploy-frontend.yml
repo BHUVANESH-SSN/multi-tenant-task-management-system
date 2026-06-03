@@ -19,5 +19,5 @@ jobs:
           script: |
             set -e
             cd ${{ secrets.FRONTEND_APP_DIR }}
-            git pull origin main
+           
             docker compose up -d --build
