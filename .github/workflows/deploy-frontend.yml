@@ -20,4 +20,5 @@ jobs:
             set -e
             cd /home/ubuntu
             docker compose down
+            docker rm -f taskflow-frontend || true
             docker compose up -d --build
